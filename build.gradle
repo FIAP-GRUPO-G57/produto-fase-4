@@ -55,6 +55,7 @@ sonar {
 }
 
 jacocoTestReport {
+	dependsOn test
 	reports {
 		xml.required = true
 		xml.outputLocation = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml")
@@ -78,5 +79,6 @@ test {
 		events "passed", "skipped", "failed"
 		exceptionFormat = 'full'
 	}
+	finalizedBy jacocoTestReport
 
 }
