@@ -60,7 +60,11 @@ jar {
 	from sourceSets.main.output
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat = 'full'
+	}
 
 }
