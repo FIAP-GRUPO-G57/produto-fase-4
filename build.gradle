@@ -41,7 +41,8 @@ dependencies {
 	//testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
-sonarqube {
+
+sonar {
 	properties {
 		property "sonar.projectKey", "produto-fase-4"
 		property "sonar.organization", "fiap-grupo-g57"

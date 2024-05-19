@@ -27,6 +27,6 @@ jobs:
           ./gradlew build --no-daemon
 
       - name: SonarQube Scan
-        run: ./gradlew sonarqube --stacktrace
+        run: ./gradlew sonar --stacktrace
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
