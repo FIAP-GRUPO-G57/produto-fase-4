@@ -5,6 +5,7 @@ plugins {
 	id "org.springdoc.openapi-gradle-plugin" version "1.7.0"
 	id "jacoco"
 	id "org.sonarqube" version "5.0.0.4638"
+
 }
 
 group = 'br.com.fiap.lanchonete'
@@ -12,11 +13,14 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = '17'
+	targetCompatibility = '17'
 }
 
 jacoco {
 	toolVersion = "0.8.7"
 }
+
+
 
 configurations {
 	compileOnly {
@@ -39,10 +43,12 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	//testImplementation 'io.cucumber:cucumber-java:7.17.0'
-	//testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.17.0'
-	//testImplementation 'org.junit.platform:junit-platform-suite-api:1.10.2'
-
+	testImplementation 'io.cucumber:cucumber-java:7.13.0'
+	testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.13.0'
+	testImplementation 'io.cucumber:cucumber-spring:7.13.0'
+	testImplementation 'org.junit.platform:junit-platform-suite-api:1.9.3'
+	//testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+	//testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 	//testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
@@ -65,6 +71,12 @@ jacocoTestReport {
 		xml.outputLocation = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml")
 
 	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: ['**/sun/**', '**/com/sun/**', '**/*$*'])
+		}))
+	}
 }
 
 
@@ -79,10 +91,13 @@ jar {
 
 test {
 	useJUnitPlatform()
+	include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class' , '**/CocumberTest.class'
+
 	testLogging {
 		events "passed", "skipped", "failed"
 		exceptionFormat = 'full'
 	}
+
 	finalizedBy jacocoTestReport
 
 }
