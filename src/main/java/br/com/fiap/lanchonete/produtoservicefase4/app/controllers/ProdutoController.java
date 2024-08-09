@@ -8,9 +8,13 @@ import br.com.fiap.lanchonete.produtoservicefase4.domain.enums.CategoriaEnum;
 import br.com.fiap.lanchonete.produtoservicefase4.domain.usecase.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.checkerframework.checker.units.qual.h;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +46,11 @@ public class ProdutoController {
 	public ResponseEntity<ProdutoDto> get(@PathVariable(value = "id") Long id) {
 		Produto produto = Optional.ofNullable(getProdutoByIdUsecase.get(id))
 				.orElseThrow(() -> new EntityNotFoundException("Produto nao encontrado para o id :: " + id));
-		return ResponseEntity.ok().body(modelMapper.map(produto, ProdutoDto.class));
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("X-Content-Type-Options", "nosniff");
+		return ResponseEntity.ok().headers(headers).body(modelMapper.map(produto, ProdutoDto.class));
 	}
 
 	@GetMapping
@@ -60,7 +68,14 @@ public class ProdutoController {
 
 		List<ProdutoDto> produtos = findProdutoByCategoriaUsecase.findByCategoria(categoriaEnum).stream()
 				.map(produto -> modelMapper.map(produto, ProdutoDto.class)).toList();
-		return ResponseEntity.ok(produtos);
+
+
+
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.add("X-Content-Type-Options", "nosniff");
+
+		return ResponseEntity.ok().headers(headers).body(produtos);
 	}
 
 	@PostMapping
